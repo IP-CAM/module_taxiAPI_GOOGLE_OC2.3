@@ -11,7 +11,7 @@ error_reporting(E_ALL ^E_NOTICE);
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        <button type="submit" form="form-category" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-taxiAPI" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
         <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a>
       </div>
       <h1><?php echo $heading_title; ?></h1>
@@ -28,6 +28,8 @@ error_reporting(E_ALL ^E_NOTICE);
         <h3 class="panel-title"><i class="fa fa-pencil"></i> <?=$text_edit;?></h3>
       </div>
       <div class="panel-body">
+
+      <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-taxiAPI" class="form-horizontal">
          <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
@@ -40,7 +42,7 @@ error_reporting(E_ALL ^E_NOTICE);
                                 <span class="label label-success" style="font-size: 15px; position: relative; top: 10px;"><?=$text_key_api?></span>
                               </div>
                               <div class="col-md-11">
-                                <input  type="text" name="apiKey" class="form-control" style="width:30%;" value="<?=$apiKey?>">
+                                <input  type="text" name="taxiAPI_apiKey" class="form-control" style="width:30%;" value="<?=$taxiAPI_apiKey?>">
                               </div>
                             </div>
                         </div>
@@ -55,7 +57,7 @@ error_reporting(E_ALL ^E_NOTICE);
                                 <span class="label label-primary" style="font-size: 15px; position: relative; top: 10px;"><?=$text_price_standart?></span>
                                </div>
                               <div class="col-md-11">
-                                <input  type="text" name="standartPrice" class="form-control" style="width:30%;" value="<?=$standartPrice?>">
+                                <input  type="text" name="taxiAPI_standartPrice" class="form-control" style="width:30%;" value="<?=$taxiAPI_standartPrice?>">
                               </div>
                             </div>
 
@@ -65,7 +67,7 @@ error_reporting(E_ALL ^E_NOTICE);
                                 <span class="label label-primary" style="font-size: 15px; position: relative; top: 10px;"><?=$text_price_business?></span>
                               </div>
                               <div class="col-md-11">
-                                <input  type="text" name="businessPrice" class="form-control" style="width:30%;" value="<?=$businessPrice?>">
+                                <input  type="text" name="taxiAPI_businessPrice" class="form-control" style="width:30%;" value="<?=$taxiAPI_businessPrice?>">
                               </div>
                             </div>
 
@@ -75,16 +77,15 @@ error_reporting(E_ALL ^E_NOTICE);
                                 <span class="label label-primary" style="font-size: 15px; position: relative; top: 10px;"><?=$text_price_miniven?></span>
                               </div>
                               <div class="col-md-11">
-                                <input  type="text" name="minivenPrice" class="form-control" style="width:30%;" value="<?=$minivenPrice?>">
+                                <input  type="text" name="taxiAPI_minivenPrice" class="form-control" style="width:30%;" value="<?=$taxiAPI_minivenPrice?>">
                               </div>  
                             </div>
-
-
                         </div>
                     </div>
-
                 </div>
             </div>
+        </form>
+
       </div>
     </div>
   </div>

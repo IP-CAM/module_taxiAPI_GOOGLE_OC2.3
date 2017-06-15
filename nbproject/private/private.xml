@@ -3,9 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/module_taxiAPI_OC2.3/admin/view/template/extension/module/taxiAPI.tpl</file>
-            <file>file:/var/www/html/module_taxiAPI_OC2.3/admin/language/ru-ru/extension/module/taxiAPI.php</file>
-            <file>file:/var/www/html/module_taxiAPI_OC2.3/admin/controller/extension/module/taxiAPI.php</file>
+            <file>file:/var/www/html/module_taxiAPI_OC2.3/catalog/controller/extension/module/taxiAPI.php</file>
         </group>
     </open-files>
 </project-private>

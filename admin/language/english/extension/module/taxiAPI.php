@@ -12,3 +12,4 @@ $_['button_save']		= 'Save';
 $_['button_cancel']		= 'Close';
 $_['text_edit']                 = 'Setting module';
 $_['text_extension']            = 'Extension';
+$_['text_success']            = 'Save!';

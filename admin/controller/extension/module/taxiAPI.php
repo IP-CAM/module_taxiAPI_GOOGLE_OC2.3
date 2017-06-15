@@ -2,7 +2,8 @@
 ini_set('display_errors',1);
 error_reporting(E_ALL ^E_NOTICE);
 
-class ControllerextensionmoduletaxiAPI extends Controller {
+class ControllerExtensionModuleTaxiAPI extends Controller {
+    private $error = array();
     
     public function index(){
         $this->load->language('extension/module/taxiAPI');
@@ -13,9 +14,8 @@ class ControllerextensionmoduletaxiAPI extends Controller {
          $this->load->model('setting/setting');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            $this->request->post['taxiAPI_GOOGLE_KEY'] = $this->config->get('taxiAPI_GOOGLE_KEY');
-            $this->model_setting_setting->editSetting('taxiAPI', $this->request->post);
-            $this->session->data['success'] = $this->language->get('text_success');
+             $this->model_setting_setting->editSetting('taxiAPI', $this->request->post);
+             $this->session->data['success'] = $this->language->get('text_success');
             $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true));
         }
         
@@ -39,19 +39,7 @@ class ControllerextensionmoduletaxiAPI extends Controller {
         else {
             $data['error_warning'] = '';
         }
-        
-        if (isset($this->error['image'])) {
-            $data['error_image'] = $this->error['image'];
-        } else {
-            $data['error_image'] = '';
-        }
-        
-        if (isset($this->error['apiKey'])) {
-            $data['apiKey'] = $this->error['apiKey'];
-        }
-        else {
-            $data['apiKey'] = '';
-        }
+  
         
         $data['breadcrumbs'] = array();
 
@@ -75,35 +63,36 @@ class ControllerextensionmoduletaxiAPI extends Controller {
 
         $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
    
-        
-        if (isset($this->request->post['apiKey'])) {
-            $data['apiKey'] = $this->request->post['apiKey'];
+
+        if (isset($this->request->post['taxiAPI_apiKey'])) {
+            $data['taxiAPI_apiKey'] = $this->request->post['taxiAPI_apiKey'];
         }
         else {
-            $data['apiKey'] = $this->config->get('apiKey');
+            $data['taxiAPI_apiKey'] = $this->config->get('taxiAPI_apiKey');
         }
+
         
-        if (isset($this->request->post['standartPrice'])) {
-            $data['standartPrice'] = $this->request->post['standartPrice'];
+        if (isset($this->request->post['taxiAPI_standartPrice'])) {
+            $data['taxiAPI_standartPrice'] = $this->request->post['taxiAPI_standartPrice'];
         }
         else {
-            $data['standartPrice'] = $this->config->get('standartPrice');
+            $data['taxiAPI_standartPrice'] = $this->config->get('taxiAPI_standartPrice');
         }
         
         
         if (isset($this->request->post['businessPrice'])) {
-            $data['businessPrice'] = $this->request->post['businessPrice'];
+            $data['taxiAPI_businessPrice'] = $this->request->post['taxiAPI_businessPrice'];
         }
         else {
-            $data['businessPrice'] = $this->config->get('businessPrice');
+            $data['taxiAPI_businessPrice'] = $this->config->get('taxiAPI_businessPrice');
         }
         
         
-        if (isset($this->request->post['minivenPrice'])) {
-            $data['minivenPrice'] = $this->request->post['minivenPrice'];
+        if (isset($this->request->post['taxiAPI_minivenPrice'])) {
+            $data['taxiAPI_minivenPrice'] = $this->request->post['taxiAPI_minivenPrice'];
         }
         else {
-            $data['minivenPrice'] = $this->config->get('minivenPrice');
+            $data['taxiAPI_minivenPrice'] = $this->config->get('taxiAPI_minivenPrice');
         }
         
         
