@@ -50,7 +50,7 @@ error_reporting(E_ALL ^E_NOTICE);
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12" style="margin-top: 20px;">
-                                 <center><h2><?=$text_price_taxi?></h2></center>
+                                 <center><h2><?=$text_tarif_taxi?></h2></center>
                             </div>
                             <div class="col-md-12">
                               <div class="col-md-1">
@@ -82,12 +82,34 @@ error_reporting(E_ALL ^E_NOTICE);
                             </div>
                         </div>
                     </div>
-                </div>
+                    <?php //цена за 1км?>
+                    <!--
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-12" style="margin-top: 20px;">
+                          <center><h2><?=$text_price_taxi?></h2></center>
+                        </div>
+                        <div class="col-md-12">
+                          <div class="col-md-1">
+                            <span class="label label-primary" style="font-size: 15px; position: relative; top: 10px;"><?=$text_price?></span>
+                          </div>
+                          <div class="col-md-11">
+                            <input  type="text" name="taxiAPI_price" class="form-control" style="width:30%;" value="<?//=$taxiAPI_price?>">
+                          </div>
+                        </div>
+                      </div>        
+                    </div>
+                    !-->
             </div>
         </form>
 
       </div>
     </div>
   </div>
+      
+      <div class="author" style="float:right;">
+          <a href="https://isyms.ru/">Created by Артур Легуша</a>
+      </div>
 </div>
 <?php echo $footer; ?>
+

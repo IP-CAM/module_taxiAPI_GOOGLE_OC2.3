@@ -22,7 +22,6 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $data['heading_title'] = $this->language->get('heading_title');
         $data['text_api_google'] = $this->language->get('text_api_google');
         $data['text_key_api'] = $this->language->get('text_key_api');
-        $data['text_price_taxi'] = $this->language->get('text_price_taxi');
         $data['text_price_standart'] = $this->language->get('text_price_standart');
         $data['text_price_business'] = $this->language->get('text_price_business');
         $data['text_price_miniven'] = $this->language->get('text_price_miniven');
@@ -30,6 +29,10 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $data['button_cancel'] = $this->language->get('button_cancel');
         $data['text_edit'] = $this->language->get('text_edit'); 
         $data['text_extension'] = $this->language->get('text_extension');
+        $data['text_tarif_taxi'] = $this->language->get('text_tarif_taxi');
+        $data['text_price_taxi'] = $this->language->get('text_price_taxi');
+        $data['text_price'] = $this->language->get('text_price');
+        
         
         
         
@@ -95,6 +98,14 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $data['taxiAPI_minivenPrice'] = $this->config->get('taxiAPI_minivenPrice');
         }
         
+        /* цена за 1км
+        if (isset($this->request->post['taxiAPI_price'])) {
+            $data['taxiAPI_price'] = $this->request->post['taxiAPI_price'];
+        }
+        else {
+            $data['taxiAPI_price'] = $this->config->get('taxiAPI_price');
+        }
+        */
         
         // Группы
         $this->load->model('customer/customer_group');
