@@ -4,6 +4,12 @@ error_reporting(E_ALL ^E_NOTICE);
 
 class ControllerExtensionModuleTaxiAPI extends Controller {
     public function index() {
+        //добавляем свои скрипты
+        $this->document->addStyle('catalog/view/css/taxiAPI/taxiAPI.css');
+	$this->document->addScript('catalog/view/javascript/jquery/taxiAPI/jquery.validate.min.js');
+        $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/taxiAPI.js');
+        
+        
         $this->load->language('extension/module/taxiAPI');
                 $this->document->setTitle($this->language->get('heading_title'));
                 
@@ -40,20 +46,19 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 $data['to_whomPhone'] = $this->language->get('to_whomPhone');
                 $data['payment_method'] = $this->language->get('payment_method');
                 $data['checkque'] = $this->language->get('checkque');
-                
+                $data['price_button'] = $this->language->get('price_button');
                 
                 
                 //получаем цены на тарифы и стоимость за 1 км
                 $data['budgetPrice'] = $this->config->get('taxiAPI_standartPrice');
                 $data['businessPrice'] = $this->config->get('taxiAPI_businessPrice');
                 $data['premiumPrice'] = $this->config->get('taxiAPI_minivenPrice');
-                $data['1kmPrice'] = $this->config->get('taxiAPI_price');
+                //$data['1kmPrice'] = $this->config->get('taxiAPI_price');
                 
                 
                 #TODO при расчете по АПИ км надо вывести общую стоимость заказа
                 
-                #TODO  способы оплаты сколько включили сколько и выводим
-           
+            
           if (isset($this->session->data['error'])) {
             $data['error_warning'] = $this->session->data['error'];
             unset($this->session->data['error']);
@@ -64,12 +69,6 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             // Payment Methods
             $this->load->model('extension/extension');
             $data['payment'] =  $this->model_extension_extension->getExtensions('payment');
-
-            
-
-
-            
- 
 
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['column_right'] = $this->load->controller('common/column_right');
@@ -85,7 +84,10 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
     
     //получаем данные по ajax  подсчитываем км (стоимость) и если все гуд то выводим общую стоимость
     public function getDataTaxi(){
-         
+        
+        //получаем данные по сериализации
+ 	 $dataTaxi = $this->unserializeTaxiForm($this->request->post['dataTaxi']);
+          
         //цена за 1 км
         //$price1km = $this->config->get('taxiAPI_price');
         
@@ -107,72 +109,82 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         //Данные откуда ехать
         
        //Обязательное для заполнения поле
-        if(!empty($this->request->post['whenceCity'])){
-            $whenceCity = $this->request->post['whenceCity'];
+        if(!empty($dataTaxi['whenceCity'])){
+            $whenceCity = urldecode($dataTaxi['whenceCity']);
         }
         
-        if(!empty($this->request->post['whenceStreet'])){
-            $whenceStreet = $this->request->post['whenceStreet']; 
+        if(!empty($dataTaxi['whenceStreet'])){
+            $whenceStreet = urldecode($dataTaxi['whenceStreet']); 
         }else{
             $whenceStreet = " ";
         }
         
-        if(!empty($this->request->post['whenceHouse'])){
-            $whenceHouse = $this->request->post['whenceHouse'];
+        if(!empty($dataTaxi['whenceHouse'])){
+            $whenceHouse = urldecode($dataTaxi['whenceHouse']);
         }else{
             $whenceHouse = " ";
         }
         
-        if(!empty($this->request->post['whenceExtr'])){
-            $whenceExtr = $this->request->post['whenceExtr'];
+        if(!empty($dataTaxi['whenceExtr'])){
+            $whenceExtr = urldecode($dataTaxi['whenceExtr']);
         }else{
             $whenceExtr = " ";
         }
         
         //создаем массив по даным откуда
-        $arrayDataWhence = array($whenceCity,$whenceStreet,$whenceHouse,$whenceExtr);
+        $arrayDataWhence = array(
+            "whenceCity"    =>$whenceCity,
+            "whenceStreet"  =>$whenceStreet,
+            "whenceHouse"   =>$whenceHouse,
+            "whenceExtr"    =>$whenceExtr
+        );
         
         
         //Данные куда ехать
         
        //Обязательное для заполнения поле
-        if(!empty($this->request->post['whereCity'])){
-            $whereCity = $this->request->post['whereCity'];
+        if(!empty($dataTaxi['whereCity'])){
+            $whereCity = urldecode($dataTaxi['whereCity']);
         }
         
-        if(!empty($this->request->post['whereStreet'])){
-            $whereStreet = $this->request->post['whereStreet']; 
+        if(!empty($dataTaxi['whereStreet'])){
+            $whereStreet = urldecode($dataTaxi['whereStreet']); 
         }else{
             $whereStreet = " ";
         }
         
-        if(!empty($this->request->post['whereHouse'])){
-           $whereHouse = $this->request->post['whereHouse'];
+        if(!empty($dataTaxi['whereHouse'])){
+           $whereHouse = urldecode($dataTaxi['whereHouse']);
         }else{
             $whereHouse = " ";
         }
         
-        if(!empty($this->request->post['whereExtr'])){
-            $whereExtr = $this->request->post['whereExtr'];
+        if(!empty($dataTaxi['whereExtr'])){
+            $whereExtr = urldecode($dataTaxi['whereExtr']);
         }else{
             $whereExtr = " ";
         }
         
         //создаем массив по даным куда
-        $arrayDataWhere = array($whereCity,$whereStreet,$whereHouse,$whereExtr);
+        $arrayDataWhere = array(
+            "whereCity"     =>$whereCity,
+            "whereStreet"   =>$whereStreet,
+            "whereHouse"    =>$whereHouse,
+            "whereExtr"     =>$whereExtr
+        );
         
          //создаем массив данных по маршруту
-        $dataArrayTaxi = array($keyAPI,$arrayDataWhence,$arrayDataWhere);
+        $dataArrayTaxi = array(
+            "keyAPI"            =>$keyAPI,
+            "arrayDataWhence"   =>$arrayDataWhence,
+            "arrayDataWhere"    =>$arrayDataWhere
+        );
         
         
         //получаем сколько км по маршруту
-        $km = $this->setDataTaxi($dataArrayTaxi);
+        $km = $this->setDataGoogleAPI($dataArrayTaxi);
         
-        //считаем стоимость проезда
-        //$summa = $tariff*$km;
-        $summa = 1*$km;
-        
-        return $summa;
+        echo $km;
  
         #TODO тут надо расчитать по формуле стоимость и отправить return  на view и дальше с помощью 
         #ajax получить это значение уже и вида и  отправить на оформление заказа или же для 
@@ -181,12 +193,26 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         
     }
     
+    //получаем нормальный массив (после сериализации)
+     public function unserializeTaxiForm($str){
+        $returndata = array();
+        $strArray = explode("&amp;", $str);
+        $i = 0;
+        foreach ($strArray as $item) {
+            $array = explode("=", $item);
+            $returndata[$array[0]] = $array[1];
+        }
+
+        return $returndata;
+    }
+    
     //метод для получения км по маршруту
     public function setDataGoogleAPI($dataArrayTaxi){
+          $this->load->language('extension/module/taxiAPI');
+       
         //ключ гугл
-        $key = $dataArrayTaxi['key'];
-        
-        //получаем данные откуда
+        $key = $dataArrayTaxi['keyAPI'];
+         //получаем данные откуда
         $whence = urlencode($dataArrayTaxi["arrayDataWhence"]['whenceCity']." ".$dataArrayTaxi["arrayDataWhence"]['whenceStreet']." ".$dataArrayTaxi["arrayDataWhence"]['whenceHouse']." ".$dataArrayTaxi["arrayDataWhence"]['whenceExtr']);
         
         //получаем данные куда
@@ -199,8 +225,26 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         //декодируем строку с JSON
         $getJsonMaps = json_decode(file_get_contents($maps));
 
-        //получаем км (только саму цыфру)
+        
+        //ловим ошибки (если ввели неправильно адресс или результат пустой)
+        $error = $getJsonMaps->status;
+        
+        //если в запросе  ошибка то прекращаем работу скрипта
+        if($error == "NOT_FOUND" || $error == "ZERO_RESULTS"){
+            $km = $this->language->get('error_message');
+        }else{
+
+	//получаем км (только саму цыфру)
         $km = (int)$getJsonMaps->routes[0]->legs[0]->distance->text;
+
+	//считаем стоимость проезда
+       	// $summa = $tariff*$km;
+        $summa = 1*$km;
+         
+        $km = $summa." ".$this->language->get('UAH');
+  
+
+	}
 
          return $km;
     }

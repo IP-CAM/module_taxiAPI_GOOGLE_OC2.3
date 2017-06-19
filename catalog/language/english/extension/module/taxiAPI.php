@@ -20,3 +20,7 @@ $_['to_whomName']       = 'Name';
 $_['to_whomPhone']      = 'Phone';
 $_['payment_method']    = 'Payment method';
 $_['checkque']          = 'checkque';
+$_['price_button']      = 'Price';
+$_['error_message']     = 'Error. Maybe wrong adress!!!';
+
+

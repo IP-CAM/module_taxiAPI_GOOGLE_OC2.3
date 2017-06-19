@@ -1,0 +1,14 @@
+body{
+	overflow-x:hidden;
+}
+.container-taxi{
+	width:100%;
+}
+.error{
+  color: red;
+}
+
+.total span {
+    margin-left: 10px;
+    font-weight: bold;
+}
