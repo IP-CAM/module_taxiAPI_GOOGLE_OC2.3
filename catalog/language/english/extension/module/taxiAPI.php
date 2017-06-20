@@ -3,7 +3,6 @@
 $_['heading_title']	= 'Tariff selection';
 
 $_['from']		= 'from';
-$_['UAH']		= 'UAH.';
 $_['budget']		= 'Budget';
 $_['business']		= 'Business';
 $_['premium']		= 'Premium';
@@ -22,5 +21,6 @@ $_['payment_method']    = 'Payment method';
 $_['checkque']          = 'checkque';
 $_['price_button']      = 'Price';
 $_['error_message']     = 'Error. Maybe wrong adress!!!';
+$_['confirm']           = 'Confirm';
 
 

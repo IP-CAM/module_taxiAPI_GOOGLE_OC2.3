@@ -31,22 +31,34 @@
                               <div class="col-md-12" style="margin-bottom:20px;">
                                 <div class="col-md-4">
                                       <div class="StandartPrice">
-                                          <img src="/" alt="<?=$budget?>">
-                                          <?=$from?> <span><?=$budgetPrice;?></span> <?=$UAH?>
+                                          <img src="http://www.segodnya.ua/img/forall/users/2366/236660/462316_chernaya_mashina_pered_audi_1680x1050_www.gdefon.ru__01.jpg" alt="<?=$budget?>" width="250" height="250">
+                                          <div class="price_img">
+                                             <?=$from?> <span><?=$budgetPrice;?></span> <?=$currency?> 
+                                          </div>
+                                          
                                       </div>
                                 </div>
                                 <div class="col-md-4">
                                   <div class="BusinesPrice">
-                                      <img src="/" alt="<?=$business?>">
-                                      <?=$from?> <span><?=$businessPrice;?></span> <?=$UAH?>
+                                      <img src="https://look.com.ua/pic/201209/1600x900/look.com.ua-19447.jpg" alt="<?=$business?>" width="250" height="250">
+                                        <div class="price_img">
+                                            <?=$from?> <span><?=$businessPrice;?></span> <?=$currency?>  
+                                        </div>
+                                      
                                   </div>
                                 </div>
                                 <div class="col-md-4">
                                   <div class="PremiumPrice">
-                                      <img src="/" alt="<?=$premium?>">
-                                      <?=$from?> <span><?=$premiumPrice;?></span> <?=$UAH?>
+                                      <img src="https://i.ytimg.com/vi/CES6J6c7zHQ/maxresdefault.jpg" alt="<?=$premium?>" width="250" height="250">
+                                      <div class="price_img">
+                                           <?=$from?> <span><?=$premiumPrice;?></span> <?=$currency?>   
+                                       </div>
+                                      
                                   </div>    
                                 </div>
+                                  <div class="tarif">
+                                      <input type="text" name="tarif" class="form-control" required>
+                                  </div>
                               </div>
                               <div class="col-md-12" style="margin-bottom:20px;">
                                   <div class="row">
@@ -128,6 +140,7 @@
                                     <div class="col-md-12">
                                            <div class="total">
                                               <span></span>
+                                              <img src="./catalog/view/img/update.png">
                                            </div>
                                      </div>
                                 </div>
@@ -135,48 +148,52 @@
                               </div>
 
                               <div class="col-md-12" style="margin-bottom:20px;">
-                                <div clas="row">
-                                  <div class="col-md-12">
-                                    <p><?=$payment_method?></p>
-                                  </div> 
+                                  <center>
+                                    <div class="row payment_method">
+                                      <div class="col-md-12">
+                                        <p><?=$payment_method?></p>
+                                      </div> 
 
-                                  <div class="col-md-12">
+                                      <div class="col-md-12">
 
-                                  <?php
-                                    $i = 0;
+                                      <?php
+                                        $i = 0;
 
-                                    foreach($payment as $paym){
+                                        foreach($payment as $paym){
 
-                                      switch($paym["code"]){
+                                          switch($paym["code"]){
 
-                                       case "cheque":
-                                        echo "
-                                          <div class='col-md-3'>
-                                            <div class='cheque'>
-                                              <p>$checkque</p>
-                                            </div>
-                                          </div>
-                                        ";
-                                        break;
-
-                                        case "liqpay":
-                                          echo"
-                                            <div class='col-md-3'>
-                                              <div class='liqpay'>
-                                                <p>liqpay</p>
+                                           case "cheque":
+                                            echo "
+                                              <div class='col-md-3'>
+                                                <div class='cheque'>
+                                                  <p>$checkque</p>
+                                                </div>
                                               </div>
-                                           </div>
-                                          ";
-                                        break;
-                                       }
+                                            ";
+                                            break;
 
-                                     }
+                                            case "liqpay":
+                                              echo"
+                                                <div class='col-md-3'>
+                                                  <div class='liqpay'>
+                                                    <p>liqpay</p>
+                                                  </div>
+                                               </div>
+                                              ";
+                                            break;
+                                           }
+
+                                         }
 
 
-                                  ?>
-                                  </div>
+                                      ?>
+                                      </div>
+                                     <input type="text" name="payment" class="form-control" style="display:none;">   
+                                    </center>
                                 </div>
                                 <div class="col-md-12">
+                                    <span class="confirm"><?=$confirm;?></span>
                                     <center><input type="submit" name="enter" style="margin-top:40px;" class="btn btn-primary price_button" value="<?=$price_button; ?>" /></center>
                                     
                                 </div>    

@@ -12,3 +12,23 @@ body{
     margin-left: 10px;
     font-weight: bold;
 }
+
+.StandartPrice, .BusinesPrice, .PremiumPrice, .cheque, .liqpay {
+    cursor: pointer;
+}
+
+.payment_method{
+    display:none;
+}
+.confirm{
+  display:none;  
+}
+.tarif{
+    display:none;
+}
+.total img{
+    display:none;
+    cursor: pointer;
+}
+
+ 

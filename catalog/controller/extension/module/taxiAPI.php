@@ -28,7 +28,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
   
                 $data['heading_title'] = $this->language->get('heading_title');
                 $data['from'] = $this->language->get('from');
-                $data['UAH'] = $this->language->get('UAH');
+                $data['currency'] = $this->session->data['currency'];
                 $data['budget'] = $this->language->get('budget');
                 $data['business'] = $this->language->get('business');
                 $data['premium'] = $this->language->get('premium');
@@ -47,6 +47,8 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 $data['payment_method'] = $this->language->get('payment_method');
                 $data['checkque'] = $this->language->get('checkque');
                 $data['price_button'] = $this->language->get('price_button');
+                $data['confirm'] = $this->language->get('confirm');
+                
                 
                 
                 //получаем цены на тарифы и стоимость за 1 км
@@ -82,12 +84,65 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
  
     }
     
-    //получаем данные по ajax  подсчитываем км (стоимость) и если все гуд то выводим общую стоимость
-    public function getDataTaxi(){
+    //получаем данные по ajax СТОИМОСТЬ
+    public function getDataPriceButton(){
+        
+        //получаем массив данных
+        $dataPriceButton = $this->getDataTaxi($this->request->post['dataTaxi']);
+        
+        //получаем сколько км по маршруту
+        $km = $this->setDataGoogleAPI($dataPriceButton);
+        
+        echo  $km;
+    }
+    
+    //получаем данные по ajax ОФОРМИТЬ
+    public function getDataPriceConfirm(){
+        
+        //получаем массив данных
+        $dataPriceConfirm = $this->getDataTaxi($this->request->post['dataTaxiConfirm']);
+        
+        //получаем сколько км по маршруту
+        $km = $this->setDataGoogleAPI($dataPriceConfirm);
+        
+        
+        /*
+        //формируем массив с данными о покупателе
+               $dataInfoOrder = array(
+                   "to_whomName"    =>$to_whomName,
+                   "to_whomPhone"   =>$to_whomPhone,
+                   "payment"        =>$payment
+               );
+
+
+
+                //создаем массив данных по маршруту
+               $dataArrayTaxi = array(
+                   "keyAPI"            =>$keyAPI,
+                   "arrayDataWhence"   =>$arrayDataWhence,
+                   "arrayDataWhere"    =>$arrayDataWhere,
+                   "dataInfoOrder"     =>$dataInfoOrder,
+               );
+         * 
+         *          */
+        
+        //если все гуд и мы получаем сумму то мы  начинаем оформлять заказ
+        if(!empty((int)$km)){
+                
+        }
+        
+ 
+        
+        
+    }
+    
+    
+    //метод формирования массива данных с формы (тариф, откуда и куда)
+    public function getDataTaxi($data){
         
         //получаем данные по сериализации
- 	 $dataTaxi = $this->unserializeTaxiForm($this->request->post['dataTaxi']);
-          
+ 	 $dataTaxi = $this->unserializeTaxiForm($data);
+                   
         //цена за 1 км
         //$price1km = $this->config->get('taxiAPI_price');
         
@@ -98,19 +153,21 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         }else{
             $keyAPI = "";
         }
-        
-        
-        //тариф который выбрали (3 тарифа такси)
-        //Обязательное для заполнения поле
-        if(!empty($this->request->post['tariff'])){
-            $tariff = $this->request->post['tariff'];
-        }
-        
+
+
         //Данные откуда ехать
         
        //Обязательное для заполнения поле
         if(!empty($dataTaxi['whenceCity'])){
             $whenceCity = urldecode($dataTaxi['whenceCity']);
+        }else{
+            $whenceCity = " ";
+        }
+        
+        if(!empty($dataTaxi['tarif'])){
+            $tarif = urldecode($dataTaxi['tarif']);
+        }else{
+            $tarif = " ";
         }
         
         if(!empty($dataTaxi['whenceStreet'])){
@@ -136,7 +193,9 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             "whenceCity"    =>$whenceCity,
             "whenceStreet"  =>$whenceStreet,
             "whenceHouse"   =>$whenceHouse,
-            "whenceExtr"    =>$whenceExtr
+            "whenceExtr"    =>$whenceExtr,
+            "tarif"         =>$tarif,
+            
         );
         
         
@@ -145,6 +204,8 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
        //Обязательное для заполнения поле
         if(!empty($dataTaxi['whereCity'])){
             $whereCity = urldecode($dataTaxi['whereCity']);
+        }else{
+            $whereCity = " ";
         }
         
         if(!empty($dataTaxi['whereStreet'])){
@@ -173,23 +234,51 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             "whereExtr"     =>$whereExtr
         );
         
+        
+        //информация о покупателе
+        if(!empty($dataTaxi['to_whomName'])){
+            $to_whomName = urldecode($dataTaxi['to_whomName']);
+        }else{
+            $to_whomName = " ";
+        }
+        
+        if(!empty($dataTaxi['to_whomPhone'])){
+            $to_whomPhone = urldecode($dataTaxi['to_whomPhone']);
+        }else{
+            $to_whomPhone = " ";
+        }
+        
+        if(!empty($dataTaxi['payment'])){
+            $payment = urldecode($dataTaxi['payment']);
+        }else{
+            $payment = " ";
+        }
+        
+        //формируем массив с данными о покупателе
+        $dataInfoOrder = array(
+            "to_whomName"    =>$to_whomName,
+            "to_whomPhone"   =>$to_whomPhone,
+            "payment"        =>$payment
+        );
+        
+        
+        
          //создаем массив данных по маршруту
         $dataArrayTaxi = array(
             "keyAPI"            =>$keyAPI,
             "arrayDataWhence"   =>$arrayDataWhence,
-            "arrayDataWhere"    =>$arrayDataWhere
+            "arrayDataWhere"    =>$arrayDataWhere,
+            "dataInfoOrder"     =>$dataInfoOrder,
         );
         
         
-        //получаем сколько км по маршруту
-        $km = $this->setDataGoogleAPI($dataArrayTaxi);
+        return $dataArrayTaxi;
         
-        echo $km;
- 
-        #TODO тут надо расчитать по формуле стоимость и отправить return  на view и дальше с помощью 
-        #ajax получить это значение уже и вида и  отправить на оформление заказа или же для 
-        #безопасности сохранить значение в перменной, что бы не было возможности отредактировать и 
-        #вставить свою сумму
+        
+        #TODO надо создать switch  где ловить по классу методы оплаты и только тогда в этом же методе 
+        #осуществлять функцию оплаты по методу, если нету отплаты то ничего не делать 
+        #посмотреть API ликпея и обычной оплаты и в модели модуля сделать аналогию просто отдав данные 
+        #и по примеру сделать расчет и перенаправление и оформление заказа 
         
     }
     
@@ -236,32 +325,44 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
 
 	//получаем км (только саму цыфру)
         $km = (int)$getJsonMaps->routes[0]->legs[0]->distance->text;
+        
+        //определяем какой тариф используется
+          switch($dataArrayTaxi["arrayDataWhence"]['tarif']){
+                case "StandartPrice":
+                  $tarif = $this->config->get('taxiAPI_standartPrice');
+                break;
 
-	//считаем стоимость проезда
-       	// $summa = $tariff*$km;
-        $summa = 1*$km;
+                case "BusinesPrice":
+                    $tarif = $this->config->get('taxiAPI_businessPrice');
+                break;
+
+                case "PremiumPrice":
+                    $tarif = $this->config->get('taxiAPI_minivenPrice');
+                break;
+
+                default:
+                   $tarif = 0;
+
+            }
+                
+
+	
          
-        $km = $summa." ".$this->language->get('UAH');
+         //если тариф больше 0 то считаем стоимость иначе выводит сообщение о ошибке
+         if(!empty($tarif)){
+             
+             //считаем стоимость проезда
+             $summa = $tarif*$km;
+             $km = $summa." ".$this->session->data['currency'];
+         }else{
+            $km = "Ошибка, возможно не выбран тариф!!!"; 
+         }
+        
   
 
 	}
 
          return $km;
     }
-    
-    //получаем все данные для  оформления заказа
-    public function checkoutTaxi(){
-         //Данные кому
- 
-        //Обязательное для заполнения поле
-        if(!empty($this->request->post['to_whomName'])){
-            $to_whomName = $this->request->post['to_whomName'];
-        }
-        
-        
-        //Обязательное для заполнения поле
-        if(!empty($this->request->post['to_whomPhone'])){
-            $to_whomPhone = $this->request->post['to_whomPhone']; 
-        }
-    }
+
 }
