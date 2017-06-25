@@ -7,15 +7,21 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
     
     public function index(){
         $this->load->language('extension/module/taxiAPI');
-        $this->load->model('tool/image');
-
+ 
          $this->document->setTitle($this->language->get('heading_title'));
-         
+         $this->load->model('extension/module');
          $this->load->model('setting/setting');
-
+ 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-             $this->model_setting_setting->editSetting('taxiAPI', $this->request->post);
-             $this->session->data['success'] = $this->language->get('text_success');
+            if (!isset($this->request->get['module_id'])) {
+                $this->model_extension_module->addModule('taxiAPI', $this->request->post);
+                $this->model_setting_setting->editSetting('taxiAPI', $this->request->post);
+            } else {
+                $this->model_extension_module->editModule($this->request->get['module_id'], $this->request->post);
+                $this->model_setting_setting->editSetting('taxiAPI', $this->request->post);
+            }
+              $this->session->data['success'] = $this->language->get('text_success');
+
             $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true));
         }
         
@@ -32,6 +38,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $data['text_tarif_taxi'] = $this->language->get('text_tarif_taxi');
         $data['text_price_taxi'] = $this->language->get('text_price_taxi');
         $data['text_price'] = $this->language->get('text_price');
+        $data['entry_name'] = $this->language->get('entry_name');
         
         
         
@@ -42,9 +49,15 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         else {
             $data['error_warning'] = '';
         }
+
+        if (isset($this->error['name'])) {
+            $data['error_name'] = $this->error['name'];
+        } else {
+            $data['error_name'] = '';
+        }
   
         
-        $data['breadcrumbs'] = array();
+       $data['breadcrumbs'] = array();
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_home'),
@@ -55,17 +68,55 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             'text' => $this->language->get('text_extension'),
             'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true)
         );
-        
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'], true)
-        );
-        $data['token'] = $this->session->data['token'];
 
-        $data['action'] = $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'], true);
+        if (!isset($this->request->get['module_id'])) {
+            $data['breadcrumbs'][] = array(
+                'text' => $this->language->get('heading_title'),
+                'href' => $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'], true)
+            );
+        } else {
+            $data['breadcrumbs'][] = array(
+                'text' => $this->language->get('heading_title'),
+                'href' => $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true)
+            );
+        }
+
+
+        if (!isset($this->request->get['module_id'])) {
+            $data['action'] = $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'], true);
+        } else {
+            $data['action'] = $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true);
+        }
 
         $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
-   
+
+        if (isset($this->request->get['module_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+            $module_info = $this->model_extension_module->getModule($this->request->get['module_id']);
+        }
+
+        if (isset($this->request->post['name'])) {
+            $data['name'] = $this->request->post['name'];
+        } elseif (!empty($module_info)) {
+            $data['name'] = $module_info['name'];
+        } else {
+            $data['name'] = '';
+        }
+
+       if (!isset($this->request->get['module_id'])) {
+            $data['breadcrumbs'][] = array(
+                'text' => $this->language->get('heading_title'),
+                'href' => $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'], true)
+            );
+        } else {
+            $data['breadcrumbs'][] = array(
+                'text' => $this->language->get('heading_title'),
+                'href' => $this->url->link('extension/module/taxiAPI', 'token=' . $this->session->data['token'] . '&module_id=' . $this->request->get['module_id'], true)
+            );
+        }
+
+        
+
+
 
         if (isset($this->request->post['taxiAPI_apiKey'])) {
             $data['taxiAPI_apiKey'] = $this->request->post['taxiAPI_apiKey'];
@@ -123,6 +174,8 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+
+
         $this->response->setOutput($this->load->view('extension/module/taxiAPI.tpl', $data));
 
      }
@@ -134,12 +187,13 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $this->error['warning'] = $this->language->get('error_permission');
         }
 
+        if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 64)) {
+            $this->error['name'] = $this->language->get('error_name');
+        }
+
         return !$this->error;
 
     }
-
-    public function install() {}
-
-    public function uninstall() {}
+ 
     
 }

@@ -33,6 +33,18 @@ error_reporting(E_ALL ^E_NOTICE);
          <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
+                      <div class="row">
+                            <div class="col-md-12" style="margin-bottom: 10px;">
+                              <div class="col-md-1">
+                                <span class="label label-success" style="font-size: 15px; position: relative; top: 10px;"><?php echo $entry_name; ?></span>
+                              </div>
+                              <div class="col-md-11">
+                                <input  type="text" name="name" class="form-control" style="width:30%;" value="<?php echo $name; ?>">
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12">
                                 <center><h2><?=$text_api_google?></h2></center>
@@ -80,6 +92,9 @@ error_reporting(E_ALL ^E_NOTICE);
                                 <input  type="text" name="taxiAPI_minivenPrice" class="form-control" style="width:30%;" value="<?=$taxiAPI_minivenPrice?>">
                               </div>  
                             </div>
+                            <div class="col-md-12" style="display:none;">
+                             <input  type="text" name="status" class="form-control" style="width:30%;" value="1">
+                            </div>
                         </div>
                     </div>
                     <?php //цена за 1км?>
@@ -112,4 +127,5 @@ error_reporting(E_ALL ^E_NOTICE);
       </div>
 </div>
 <?php echo $footer; ?>
+
 

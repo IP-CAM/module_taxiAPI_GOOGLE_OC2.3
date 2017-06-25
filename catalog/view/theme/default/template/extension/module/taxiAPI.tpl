@@ -1,212 +1,101 @@
-<?php echo $header; ?>
-<div class="container">
-  <ul class="breadcrumb">
-    <?php foreach ($breadcrumbs as $breadcrumb) { ?>
-    <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
-    <?php } ?>
-  </ul>
-  <?php if ($error_warning) { ?>
-  <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?>
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-  </div>
-  <?php } ?>
-</div>
-<div class="container-taxi">
-    <div class="row"><?php echo $column_left; ?>
-            <?php if ($column_left && $column_right) { ?>
-            <?php $class = 'col-sm-6'; ?>
-            <?php } elseif ($column_left || $column_right) { ?>
-            <?php $class = 'col-sm-9'; ?>
-            <?php } else { ?>
-            <?php $class = 'col-sm-12'; ?>
-            <?php } ?>
-
-        <div id="content"><?php echo $content_top; ?>
-                <div class="container">
-                    <div class="col-md-12">
-                        <p><?=$heading_title?></p>
-                    </div>
-                    <div class="row">
-                        <form id="form_taxiAPI" action="" method="post">
-                              <div class="col-md-12" style="margin-bottom:20px;">
-                                <div class="col-md-4">
-                                      <div class="StandartPrice">
-                                          <img src="http://www.segodnya.ua/img/forall/users/2366/236660/462316_chernaya_mashina_pered_audi_1680x1050_www.gdefon.ru__01.jpg" alt="<?=$budget?>" width="250" height="250">
-                                          <div class="price_img">
-                                             <?=$from?> <span><?=$budgetPrice;?></span> <?=$currency?> 
-                                          </div>
-                                          
-                                      </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="BusinesPrice">
-                                      <img src="https://look.com.ua/pic/201209/1600x900/look.com.ua-19447.jpg" alt="<?=$business?>" width="250" height="250">
-                                        <div class="price_img">
-                                            <?=$from?> <span><?=$businessPrice;?></span> <?=$currency?>  
-                                        </div>
-                                      
-                                  </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="PremiumPrice">
-                                      <img src="https://i.ytimg.com/vi/CES6J6c7zHQ/maxresdefault.jpg" alt="<?=$premium?>" width="250" height="250">
-                                      <div class="price_img">
-                                           <?=$from?> <span><?=$premiumPrice;?></span> <?=$currency?>   
-                                       </div>
-                                      
-                                  </div>    
-                                </div>
-                                  <div class="tarif">
-                                      <input type="text" name="tarif" class="form-control" required>
-                                  </div>
-                              </div>
-                              <div class="col-md-12" style="margin-bottom:20px;">
-                                  <div class="row">
-                                      <div class="col-md-12">
-                                          <div class="col-md-12">
-                                              <p><?=$where_to_go_from?></p>
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whenceCity" class="form-control" style="width:90%;" placeholder="<?=$city?>" required>
-                                              </div>         
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whenceStreet" class="form-control" style="width:90%;" placeholder="<?=$street?>">
-                                              </div>     
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whenceHouse" class="form-control" style="width:90%;" placeholder="<?=$house?>">
-                                              </div>
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whenceExtr" class="form-control" style="width:90%;" placeholder="<?=$extr?>">
-                                              </div>    
-                                          </div> 
-                                      </div>
-                                      <div class="col-md-12 focus_load">
-                                          <div class="col-md-12">
-                                              <p><?=$where_to_go?></p>
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whereCity" class="form-control" style="width:90%;" placeholder="<?=$city?>" required>
-                                              </div>         
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whereStreet" class="form-control" style="width:90%;" placeholder="<?=$street?>">
-                                              </div>     
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whereHouse" class="form-control" style="width:90%;" placeholder="<?=$house?>">
-                                              </div>
-                                          </div>
-                                          <div class="col-md-3">
-                                              <div class="form-group">
-                                                  <input type="text" name="whereExtr" class="form-control" style="width:90%;" placeholder="<?=$extr?>">
-                                              </div>    
-                                          </div> 
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="col-md-12" style="margin-bottom:20px;">
-                                  <div class="col-md-12">
-                                      <p><?=$to_whom?></p>
-                                  </div>
-                                  <div class="col-md-12">
-                                      <div class="col-md-6">
-                                          <div class="form-group">
-                                              <input type="text" name="to_whomName" class="form-control" style="width:70%;" placeholder="<?=$to_whomName?>" required>
-                                          </div>    
-                                      </div>
-                                      <div class="col-md-6">
-                                          <div class="form-group">
-                                              <input type="text" name="to_whomPhone" class="form-control" style="width:70%;" placeholder="<?=$to_whomPhone?>" required>
-                                          </div>    
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="col-md-12" style="margin-bottom:20px;">
-                                <center>  
-                                <div class="row">
-                                  <div class="col-md-12">
-                                    <p><?=$total?></p>
-                                  </div>
-                                    <div class="col-md-12">
-                                           <div class="total">
-                                              <span></span>
-                                              <img src="./catalog/view/img/update.png">
-                                           </div>
-                                     </div>
-                                </div>
-                                </center> 
-                              </div>
-
-                              <div class="col-md-12" style="margin-bottom:20px;">
-                                  <center>
-                                    <div class="row payment_method">
-                                      <div class="col-md-12">
-                                        <p><?=$payment_method?></p>
-                                      </div> 
-
-                                      <div class="col-md-12">
-
-                                      <?php
-                                        $i = 0;
-
-                                        foreach($payment as $paym){
-
-                                          switch($paym["code"]){
-
-                                           case "cheque":
-                                            echo "
-                                              <div class='col-md-3'>
-                                                <div class='cheque'>
-                                                  <p>$checkque</p>
-                                                </div>
-                                              </div>
-                                            ";
-                                            break;
-
-                                            case "liqpay":
-                                              echo"
-                                                <div class='col-md-3'>
-                                                  <div class='liqpay'>
-                                                    <p>liqpay</p>
-                                                  </div>
-                                               </div>
-                                              ";
-                                            break;
-                                           }
-
-                                         }
-
-
-                                      ?>
-                                      </div>
-                                     <input type="text" name="payment" class="form-control" style="display:none;">   
-                                    </center>
-                                </div>
-                                <div class="col-md-12">
-                                    <span class="confirm"><?=$confirm;?></span>
-                                    <center><input type="submit" name="enter" style="margin-top:40px;" class="btn btn-primary price_button" value="<?=$price_button; ?>" /></center>
-                                    
-                                </div>    
-                        </form>      
-                    </div>
-                    
+<div class="col-lg-12 col-md-12">
+              <h1><?=$choise;?> <span style="color: #d1a36f;"><?=$tarif;?></span></h1>
+              <p>Maecenas vitae turpis dapibus neque mollis mattis. Nam pretium <br> libero sit amet feugiat pretium. Morbi ut fringilla urna.</p>
+              <div class="col-lg-4 col-md-4">
+                <div class="StandartPrice">  
+                    <p style="margin-top: 0px;"><img src="catalog/view/theme/TaxiTemplateOc2.3/images/first.png" height="160" width="300" alt=""></p>
+                    <h5><?=$budget;?></h5>
+                    <p><?=$from?> <?=$budgetPrice;?> <?=$currency?></p>
                 </div>
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="BusinesPrice">
+                    <p><img src="catalog/view/theme/TaxiTemplateOc2.3/images/second.png" alt=""></p>
+                    <h5><?=$business;?></h5>
+                    <p><?=$from?> <?=$businessPrice;?> <?=$currency?></p>
+                </div>    
+              </div>
+              <div class="col-lg-4 col-md-4">
+                <div class="PremiumPrice">  
+                    <p><img src="catalog/view/theme/TaxiTemplateOc2.3/images/third.png" alt=""></p>
+                    <h5><?=$premium;?></h5>
+                    <p><?=$from?> <?=$premiumPrice;?> <?=$currency?></p>
+                </div>
+              </div>
+
+
+ </div>
+         </section>
+        <p style="text-align: center;padding-bottom: 50px;color: #000;">*Минимальная стоимость проезда (подача машины + первых 2км)</p>
+       <form id="form_taxiAPI" action="" method="post"> 
+        <section class="inputs">
+         <div class="col-lg-12 col-md-12">
+           <h1 class="count">ПОДСЧЕТ СТОИМОСТИ <span style="color: #d1a36f;">ПРОЕЗДА</span></h1>
+           <p>Pellentesque congue volutpat enim in fringilla.</p>
+           <h4 style="padding: 20px;"><?=$where_to_go_from?></h4>
+           <div class="tarif">
+                <input type="text" name="tarif" class="form-control" required>
+           </div>
+           <p>
+             <input type="text" name="whenceCity" placeholder="<?=$city?>" required>
+             <input type="text" name="whenceStreet" placeholder="<?=$street?>">
+             <input type="text" name="whenceHouse" placeholder="<?=$house?>">
+             <input type="text" name="whenceExtr" placeholder="<?=$extr?>">
+           </p>
+           <h4 style="padding: 20px;"><?=$where_to_go?></h4>
+           <p>
+             <input type="text" name="whereCity" placeholder="<?=$city?>" required>
+             <input type="text" name="whereStreet" placeholder="<?=$street?>">
+             <input type="text" name="whereHouse" placeholder="<?=$house?>">
+             <input type="text" name="whereExtr" placeholder="<?=$extr?>">
+           </p>
+           <h4><?=$to_whom?></h4>
+           <p>
+             <input type="text" name="to_whomName" placeholder="<?=$to_whomName?>" required>
+             <input type="text" name="to_whomPhone" placeholder="<?=$to_whomPhone?>" required>
+           </p>
+           <h4><?=$total?></h4>
+           <div class="total">
+                <span></span>
+             </div>
+           <p><?=$payment_method?></p>
+           <p class="payment">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              
+              <!--<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 master"><img src="catalog/view/theme/TaxiTemplateOc2.3/images/mastercard.png" alt=""></div> !-->
+              <!--<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 privat"><img src="catalog/view/theme/TaxiTemplateOc2.3/images/privat.png" alt=""></div> !-->
+                <?php
+                    $i = 0;
+
+                    foreach($payment as $paym){
+                        switch($paym["code"]){
+                            case "cheque":
+                                echo "
+                                    <div class='col-lg-3 col-md-3 col-sm-3 col-xs-6 cheque'>
+                                        <img src='/' alt='$checkque'>
+                                    </div>
+                                ";
+                            
+                            break;
+
+                            case "liqpay":
+                                echo"
+                                    <div class='col-lg-3 col-md-3 col-sm-3 col-xs-6 liqpay'>   
+                                        <img src='catalog/view/theme/TaxiTemplateOc2.3/images/liqpay.png' alt='liqpay'>
+                                    </div>
+                                ";
+                                break;
+                        }
+                    }
+
+                ?>
+             </div>
+           <input type="text" name="payment" class="form-control" style="display:none;">
+           <p class="lead">
+              <button type="submit" class="btn btn-lg btn-info confirm_button"><?=$confirm;?> <img src="catalog/view/theme/TaxiTemplateOc2.3/images/ofotmit.png" alt=""></button>
+              
+          </p>
+          </div>
         </div>
-
-              <?php echo $content_bottom; ?>
-    </div>
- 
-    <?php echo $column_right; ?>
-</div>
-
-<?php echo $footer; ?>
+      </section>
+    </form> 

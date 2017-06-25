@@ -6,27 +6,13 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
     public function index() {
         //добавляем свои скрипты
         $this->document->addStyle('catalog/view/css/taxiAPI/taxiAPI.css');
-	$this->document->addScript('catalog/view/javascript/jquery/taxiAPI/jquery.validate.min.js');
+        $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/jquery.validate.min.js');
         $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/taxiAPI.js');
         
-        
         $this->load->language('extension/module/taxiAPI');
-                $this->document->setTitle($this->language->get('heading_title'));
-                
-                $data['breadcrumbs'] = array();
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home')
-        );
- 
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/module/taxiAPI', '', true)
-        );
-                
   
-                $data['heading_title'] = $this->language->get('heading_title');
+                
+ 
                 $data['from'] = $this->language->get('from');
                 $data['currency'] = $this->session->data['currency'];
                 $data['budget'] = $this->language->get('budget');
@@ -48,6 +34,8 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 $data['checkque'] = $this->language->get('checkque');
                 $data['price_button'] = $this->language->get('price_button');
                 $data['confirm'] = $this->language->get('confirm');
+                $data['choise'] = $this->language->get('choise');
+                $data['tarif'] = $this->language->get('tarif');
                 
                 
                 
@@ -58,97 +46,25 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 //$data['1kmPrice'] = $this->config->get('taxiAPI_price');
                 
                 
-                #TODO при расчете по АПИ км надо вывести общую стоимость заказа
-                
-            
-          if (isset($this->session->data['error'])) {
-            $data['error_warning'] = $this->session->data['error'];
-            unset($this->session->data['error']);
-        } else {
-            $data['error_warning'] = '';
-        }
-                
             // Payment Methods
             $this->load->model('extension/extension');
             $data['payment'] =  $this->model_extension_extension->getExtensions('payment');
-
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['column_right'] = $this->load->controller('common/column_right');
-        $data['content_top'] = $this->load->controller('common/content_top');
-        $data['content_bottom'] = $this->load->controller('common/content_bottom');
-        $data['footer'] = $this->load->controller('common/footer');
-        $data['header'] = $this->load->controller('common/header');
                 
-                $this->response->setOutput($this->load->view('extension/module/taxiAPI', $data));
+                //$this->response->setOutput($this->load->view('extension/module/taxiAPI', $data));
                 
+                return $this->load->view('extension/module/taxiAPI', $data);
  
     }
-    
-    //получаем данные по ajax СТОИМОСТЬ
-    public function getDataPriceButton(){
-        
-        //получаем массив данных
-        $dataPriceButton = $this->getDataTaxi($this->request->post['dataTaxi']);
-        
-        //получаем сколько км по маршруту
-        $km = $this->setDataGoogleAPI($dataPriceButton);
-        
-        echo  $km;
-    }
-    
+
     //получаем данные по ajax ОФОРМИТЬ
     public function getDataPriceConfirm(){
-        
+                
         //получаем массив данных
         $dataPriceConfirm = $this->getDataTaxi($this->request->post['dataTaxiConfirm']);
         
         //получаем сколько км по маршруту
         $km = $this->setDataGoogleAPI($dataPriceConfirm);
-        
-        
-        /*
-        //формируем массив с данными о покупателе
-               $dataInfoOrder = array(
-                   "to_whomName"    =>$to_whomName,
-                   "to_whomPhone"   =>$to_whomPhone,
-                   "payment"        =>$payment
-               );
-         * 
-         *  //создаем массив по даным откуда
-        $arrayDataWhence = array(
-            "whenceCity"    =>$whenceCity,
-            "whenceStreet"  =>$whenceStreet,
-            "whenceHouse"   =>$whenceHouse,
-            "whenceExtr"    =>$whenceExtr,
-            "tarif"         =>$tarif,
-         * 
-         * 
-            
-        );
-         * 
-         * //создаем массив по даным куда
-        $arrayDataWhere = array(
-            "whereCity"     =>$whereCity,
-            "whereStreet"   =>$whereStreet,
-            "whereHouse"    =>$whereHouse,
-            "whereExtr"     =>$whereExtr
-        );
-
-
-
-                //создаем массив данных по маршруту
-               $dataArrayTaxi = array(
-                   "keyAPI"            =>$keyAPI,
-                   "arrayDataWhence"   =>$arrayDataWhence,
-                   "arrayDataWhere"    =>$arrayDataWhere,
-                   "dataInfoOrder"     =>$dataInfoOrder,
-               );
-         * 
-         *          */
-        
-        
-        
-        #TODO надо пофиксить баги: в заказе не видно товар, не добавляется СУММА, надо создать   
+                
         #расчет  по ликпею если все гуд то перекидывать на success. Так же сделать  по оплате 
         #наличными.
         
@@ -179,29 +95,64 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 
                 case "cheque":
                     
+                    $this->load->model('extension/module/taxiAPI');
+                    
                    //получаем данные для оформления ордера (массив) 
                    $order_data = $this->addOrderTaxi($dataInfo);
-                   
+                    
+                
                    //получили ордер id
                    $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+
+                   $dataOrderSet = array(
+                        'order_id' => $this->session->data['order_id'],
+                        'status'   => $this->config->get('cheque_order_status_id'),
+                        'comment'  => $comment,
+                        'notify'   => true,
+                        'price'    => $dataInfo['price'],
+
+                    );
                     
                    //создаем заказ в админке
-                    $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('cheque_order_status_id'), $comment, true);
+                $result =  (int)$this->model_extension_module_taxiAPI->addOrderHistory($dataOrderSet);
+                    
                 
+                
+                if(!empty($result)){
+                    echo "index.php?route=checkout/success";
+                }
                 
                 break;
             
                 case "liqpay":
+                 //получаем данные для оформления ордера (массив) 
+                   $order_data = $this->addOrderTaxi($dataInfo);
                     
+                
+                   //получили ордер id
+                   $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+                   
+                   
+                 $this->load->model('extension/payment/liqpayTaxiApi'); 
+                  $params = array(
+                    'action'         => 'pay',
+                    'amount'         => $dataInfo['price'],
+                    'currency'       => $this->session->data['currency'],
+                    'description'    => 'taxi',
+                    'order_id'       => $this->session->data['order_id'],
+                    'version'        => '3'
+                   );
                     
-                    
+                  $this->model_extension_payment_liqpayTaxiApi->__construct($public_key = "i518939535", $private_key = "BQd4woo0A48Erkzq62Et88B14bKj74gRbJPWgt7L");
+                  
+                
+                 $s =  $this->model_extension_payment_liqpayTaxiApi->cnb_form($params); 
+                  
+                  
+                    var_dump($s);
                     
                 break;
-            
-            
-            //по дефолту будет идти оплата наличными
-                default:
-                    
+                
                 
             }
         }
@@ -216,7 +167,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
     public function getDataTaxi($data){
         
         //получаем данные по сериализации
- 	 $dataTaxi = $this->unserializeTaxiForm($data);
+     $dataTaxi = $this->unserializeTaxiForm($data);
                    
         //цена за 1 км
         //$price1km = $this->config->get('taxiAPI_price');
@@ -391,7 +342,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $km = $this->language->get('error_message');
         }else{
 
-	//получаем км (только саму цыфру)
+    //получаем км (только саму цыфру)
         $km = (int)$getJsonMaps->routes[0]->legs[0]->distance->text;
         
         //определяем какой тариф используется
@@ -425,7 +376,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         
   
 
-	}
+    }
 
          return $km;
     }
@@ -437,21 +388,44 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         //используется API опенкарта
         $order_data = array();
         
+        // Validate cart has products and has stock.
+	if ((!$this->cart->hasProducts() && empty($this->session->data['vouchers'])) || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout'))) {
+		$redirect = $this->url->link('checkout/cart');
+	}
+        // Gift Voucher
+			$order_data['vouchers'] = array();
+
+			if (!empty($this->session->data['vouchers'])) {
+				foreach ($this->session->data['vouchers'] as $voucher) {
+					$order_data['vouchers'][] = array(
+						'description'      => $voucher['description'],
+						'code'             => token(10),
+						'to_name'          => $voucher['to_name'],
+						'to_email'         => $voucher['to_email'],
+						'from_name'        => $voucher['from_name'],
+						'from_email'       => $voucher['from_email'],
+						'voucher_theme_id' => $voucher['voucher_theme_id'],
+						'message'          => $voucher['message'],
+						'amount'           => $voucher['amount']
+					);
+				}
+			}
+                        
+        
         $order_data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
-	$order_data['store_id'] = $this->config->get('config_store_id');
-	$order_data['store_name'] = $this->config->get('config_name');
+        $order_data['store_id'] = $this->config->get('config_store_id');
+        $order_data['store_name'] = $this->config->get('config_name');
         
         $totals = array();
-	$taxes = $this->cart->getTaxes();
-	$total = $data['price'];
-        $this->session->data['vouchers'] = $data['price'];
-
-	// Because __call can not keep var references so we put them into an array.
-	$total_data = array(
+    $taxes = $this->cart->getTaxes();
+    $total = $data['price'];
+                
+    // Because __call can not keep var references so we put them into an array.
+    $total_data = array(
             'totals' => &$totals,
             'taxes'  => &$taxes,
             'total'  => &$total
-	);
+    );
         
         $this->load->model('extension/extension');
         $sort_order = array();
@@ -459,25 +433,25 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $results = $this->model_extension_extension->getExtensions('total');
 
             foreach ($results as $key => $value) {
-            	$sort_order[$key] = $this->config->get($value['code'] . '_sort_order');
-	}
+                $sort_order[$key] = $this->config->get($value['code'] . '_sort_order');
+    }
           
         array_multisort($sort_order, SORT_ASC, $results);
         
         foreach ($results as $result) {
             if ($this->config->get($result['code'] . '_status')) {
-		$this->load->model('extension/total/' . $result['code']);
+        $this->load->model('extension/total/' . $result['code']);
 
-		// We have to put the totals in an array so that they pass by reference.
-		$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
-				}
-	}
+        // We have to put the totals in an array so that they pass by reference.
+        $this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+                }
+    }
         
         $sort_order = array();
         
         foreach ($totals as $key => $value) {
             $sort_order[$key] = $value['sort_order'];
-	}
+    }
         
         array_multisort($sort_order, SORT_ASC, $totals);
         
@@ -486,39 +460,39 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         
         if ($order_data['store_id']) {
             $order_data['store_url'] = $this->config->get('config_url');
-		} else {
-			if ($this->request->server['HTTPS']) {
-				$order_data['store_url'] = HTTPS_SERVER;
-			} else {
+        } else {
+            if ($this->request->server['HTTPS']) {
+                $order_data['store_url'] = HTTPS_SERVER;
+            } else {
                             $order_data['store_url'] = HTTP_SERVER;
-			}
-	}
+            }
+    }
         
         $this->load->model('account/customer');
         $order_data['customer_id'] = 0;
-	$order_data['customer_group_id'] = 0;
-	$order_data['firstname'] = $data["to_whomName"];
-	$order_data['lastname'] = "user";
-	$order_data['email'] = "not found";
-	$order_data['telephone'] = $data["to_whomPhone"];
-	$order_data['fax'] = 0000;
-	$order_data['custom_field'] = 0000;
+    $order_data['customer_group_id'] = 0;
+    $order_data['firstname'] = $data["to_whomName"];
+    $order_data['lastname'] = "user";
+    $order_data['email'] = "not found";
+    $order_data['telephone'] = $data["to_whomPhone"];
+    $order_data['fax'] = 0000;
+    $order_data['custom_field'] = 0000;
         
         $order_data['payment_firstname'] = $data["to_whomName"];
-	$order_data['payment_lastname'] = "user";
-	$order_data['payment_company'] = "not found";
-	$order_data['payment_address_1'] = $data["dataWhence"];
-	$order_data['payment_address_2'] = $data["dataWhere"];
-	$order_data['payment_city'] = $data["dataWhenceCity"];
-	$order_data['payment_postcode'] = 0000;
-	$order_data['payment_zone'] = 0000;
-	$order_data['payment_zone_id'] = 0000;
-	$order_data['payment_country'] = "not found";
-	$order_data['payment_country_id'] = 0000;
-	$order_data['payment_address_format'] = 0000;
-	$order_data['payment_custom_field'] = 0000;
+    $order_data['payment_lastname'] = "user";
+    $order_data['payment_company'] = "not found";
+    $order_data['payment_address_1'] = $data["dataWhence"];
+    $order_data['payment_address_2'] = $data["dataWhere"];
+    $order_data['payment_city'] = $data["dataWhenceCity"];
+    $order_data['payment_postcode'] = 0000;
+    $order_data['payment_zone'] = 0000;
+    $order_data['payment_zone_id'] = 0000;
+    $order_data['payment_country'] = "not found";
+    $order_data['payment_country_id'] = 0000;
+    $order_data['payment_address_format'] = 0000;
+    $order_data['payment_custom_field'] = 0000;
         $order_data['affiliate_id'] = 0;
-	$order_data['commission'] = 0;
+    $order_data['commission'] = 0;
         $order_data['marketing_id'] = 0;
         $order_data['tracking'] = '';
         
@@ -544,13 +518,13 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $option_data = array();
             
             $option_data[] = array(
-		'product_option_id'       => " ",
-		'product_option_value_id' => " ",
-		'option_id'               => " ",
-		'option_value_id'         => " ",
-		'name'                    => " ",
-		'value'                   => " ",
-		'type'                    => " "
+        'product_option_id'       => " ",
+        'product_option_value_id' => " ",
+        'option_id'               => " ",
+        'option_value_id'         => " ",
+        'name'                    => " ",
+        'value'                   => " ",
+        'type'                    => " "
             );
                 
 
@@ -566,39 +540,64 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             'total'      =>  $data["price"],
             'tax'        => 0000,
             'reward'     => 0000
-	);
+    );
         
-        $order_data['comment'] = "not found";
-	$order_data['total'] = $data["price"];
-        $order_data['language_id'] = $this->config->get('config_language_id');
+    $order_data['comment'] = "not found";
+    $order_data['total'] = $data["price"];
+    
+    $order_data['language_id'] = $this->config->get('config_language_id');
+        
+        // Gift Voucher
+	$data['vouchers'] = array();
+
+            if (!empty($this->session->data['vouchers'])) {
+		foreach ($this->session->data['vouchers'] as $voucher) {
+                    $data['vouchers'][] = array(
+                        'description' => $voucher['description'],
+                        'amount'      => $this->currency->format($voucher['amount'], $this->session->data['currency'])
+                    );
+		}
+            }
                 
-	$order_data['currency_id'] = $this->currency->getId($this->session->data['currency']);
-	$order_data['currency_code'] = $this->session->data['currency'];
-	$order_data['currency_value'] = $this->currency->getValue($this->session->data['currency']);
+    $order_data['currency_id'] = $this->currency->getId($this->session->data['currency']);
+    $order_data['currency_code'] = $this->session->data['currency'];
+    $order_data['currency_value'] = $this->currency->getValue($this->session->data['currency']);
         
-	$order_data['ip'] = $this->request->server['REMOTE_ADDR'];        
+    $order_data['ip'] = $this->request->server['REMOTE_ADDR'];        
         
         if (!empty($this->request->server['HTTP_X_FORWARDED_FOR'])) {
             $order_data['forwarded_ip'] = $this->request->server['HTTP_X_FORWARDED_FOR'];
-	} elseif (!empty($this->request->server['HTTP_CLIENT_IP'])) {
+    } elseif (!empty($this->request->server['HTTP_CLIENT_IP'])) {
             $order_data['forwarded_ip'] = $this->request->server['HTTP_CLIENT_IP'];
-	} else {
+    } else {
             $order_data['forwarded_ip'] = '';
-	}
+    }
 
-	if (isset($this->request->server['HTTP_USER_AGENT'])) {
+    if (isset($this->request->server['HTTP_USER_AGENT'])) {
             $order_data['user_agent'] = $this->request->server['HTTP_USER_AGENT'];
-	} else {
+    } else {
             $order_data['user_agent'] = '';
-	}
+    }
 
-	if (isset($this->request->server['HTTP_ACCEPT_LANGUAGE'])) {
+    if (isset($this->request->server['HTTP_ACCEPT_LANGUAGE'])) {
             $order_data['accept_language'] = $this->request->server['HTTP_ACCEPT_LANGUAGE'];
-	} else {
+    } else {
             $order_data['accept_language'] = '';
         }
         
         return $order_data;
+    }
+    
+    //функция которая подтягивает данные (обновление данных без ведома пользователей)
+    public function getDataPriceButton(){
+        
+        //получаем массив данных
+        $dataPriceButton = $this->getDataTaxi($this->request->post['dataTaxi']);
+        
+        //получаем сколько км по маршруту
+        $km = $this->setDataGoogleAPI($dataPriceButton);
+        
+        echo  $km;
     }
 
 }

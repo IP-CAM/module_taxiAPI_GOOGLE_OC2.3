@@ -15,3 +15,4 @@ $_['text_extension']            = 'Extension';
 $_['text_success']              = 'Save!';
 $_['text_price_taxi']		= 'Price 1km';
 $_['text_price']		= 'Price :';
+$_['entry_name']		= 'Name module :';

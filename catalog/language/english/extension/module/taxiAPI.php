@@ -1,11 +1,12 @@
 <?php
 // Heading
-$_['heading_title']	= 'Tariff selection';
+$_['choise']            = 'CHOISE';
+$_['tarif']             = 'TARIF';
 
 $_['from']		= 'from';
-$_['budget']		= 'Budget';
-$_['business']		= 'Business';
-$_['premium']		= 'Premium';
+$_['budget']		= 'BUDGET';
+$_['business']		= 'BUSINESS';
+$_['premium']		= 'PREMIUM';
 $_['where_to_go_from']	= 'Where to go fromь:';
 $_['city']              = 'City';
 $_['street']            = 'Street';
