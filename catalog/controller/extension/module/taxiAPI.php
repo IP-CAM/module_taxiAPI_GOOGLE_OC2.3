@@ -123,8 +123,41 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 }
                 
                 break;
+                
+                case "cod":
+                    
+                    $this->load->model('extension/module/taxiAPI');
+                    
+                   //получаем данные для оформления ордера (массив) 
+                   $order_data = $this->addOrderTaxi($dataInfo);
+                    
+                
+                   //получили ордер id
+                   $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+
+                   $dataOrderSet = array(
+                        'order_id' => $this->session->data['order_id'],
+                        'status'   => "2",
+                        'comment'  => $comment,
+                        'notify'   => true,
+                        'price'    => $dataInfo['price'],
+
+                    );
+                    
+                   //создаем заказ в админке
+                $result =  (int)$this->model_extension_module_taxiAPI->addOrderHistory($dataOrderSet);
+                    
+                
+                
+                if(!empty($result)){
+                    echo "index.php?route=checkout/success";
+                }
+                
+                break;
             
                 case "liqpay":
+                $this->load->model('extension/module/taxiAPI');
+
                  //получаем данные для оформления ордера (массив) 
                    $order_data = $this->addOrderTaxi($dataInfo);
                     
@@ -132,24 +165,47 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                    //получили ордер id
                    $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
                    
+                   $dataOrderSet = array(
+                        'order_id' => $this->session->data['order_id'],
+                        'status'   => 2,
+                        'comment'  => $comment,
+                        'notify'   => true,
+                        'price'    => $dataInfo['price'],
+
+                    );
+                    
+                    $result =  (int)$this->model_extension_module_taxiAPI->addOrderHistory($dataOrderSet);
+                    
                    
-                 $this->load->model('extension/payment/liqpayTaxiApi'); 
-                  $params = array(
+                   //ключи liqpay
+		    $public_key  = "i95396534003";
+		    $private_key = "XQn4j31AmB6eKMKlCjm3oFXa7Z80L2lpT8qPKSAX";
+		    
+                   
+                   $params = array(
                     'action'         => 'pay',
                     'amount'         => $dataInfo['price'],
                     'currency'       => $this->session->data['currency'],
                     'description'    => 'taxi',
                     'order_id'       => $this->session->data['order_id'],
-                    'version'        => '3'
-                   );
+                    'version'        => '3',
+                    'result_url'    => $_SERVER['SERVER_NAME']."/"."index.php?route=checkout/success",
+                    'sender_first_name' => $dataInfo['to_whomName'],
+                   // 'sandbox'	=> 1,
                     
-                  $this->model_extension_payment_liqpayTaxiApi->__construct($public_key = "i518939535", $private_key = "BQd4woo0A48Erkzq62Et88B14bKj74gRbJPWgt7L");
-                  
+                    
+                    );
+                   
+                   $data        = base64_encode(json_encode(array_merge(compact('public_key'), $params)));
+		   $signature   = base64_encode(sha1($private_key.$data.$private_key, 1));
+		 
                 
-                 $s =  $this->model_extension_payment_liqpayTaxiApi->cnb_form($params); 
-                  
-                  
-                    var_dump($s);
+		    if(!empty($result)){
+			echo "https://www.liqpay.com/api/3/checkout?data=".$data."&"."signature=".$signature;
+		    }
+                    
+                   
+                   
                     
                 break;
                 
@@ -497,6 +553,13 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         $order_data['tracking'] = '';
         
         $order_data['payment_method'] = $this->language->get('checkque');
+        
+        if($data["payment_method_code"] == "liqpay"){
+        
+        $order_data['payment_method'] = "liqpay";
+	  
+        }
+        
         $order_data['payment_code'] = $data["payment_method_code"];            
                 
             $order_data['shipping_firstname'] = '';

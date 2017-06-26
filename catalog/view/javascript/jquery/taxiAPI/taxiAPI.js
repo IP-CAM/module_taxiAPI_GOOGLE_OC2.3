@@ -1,13 +1,15 @@
 $(document).ready(function(){
 	
         //выбираем по дефолту
-            $("input[name='payment']").val("cheque");
-            $(".cheque").css("border","1px solid #337ab7");
-            $(".cheque").css("padding","5px 10px 5px 10px");
-            $(".cheque").css("width","170px");
+            $("input[name='payment']").val("cod");
+            $(".cod").css("border","1px solid #337ab7");
+            $(".cod").css("padding","5px 10px 5px 10px");
+            $(".cod").css("width","170px");
             $(".liqpay").css("border","none");
             $(".liqpay").css("padding","0");
-            
+	    $(".cheque").css("border","none");
+            $(".cheque").css("padding","0");
+             
             
 	//отправляем на сервер для получения сумму
     $("#form_taxiAPI").validate({
@@ -23,8 +25,8 @@ $(document).ready(function(){
                     },
                     success:function(data){
                         
-                        console.log(data);
-                        //location.href = data;
+                        //console.log(data);
+                        location.href = data;
                         
                
                     },
@@ -165,7 +167,8 @@ $(document).ready(function(){
             $(this).css("width","170px");
             $(".liqpay").css("border","none");
             $(".liqpay").css("padding","0");
-            
+            $(".cod").css("border","none");
+            $(".cod").css("padding","0");
             
             
   
@@ -182,9 +185,30 @@ $(document).ready(function(){
             $(this).css("width","170px");
             $(".cheque").css("border","none");
             $(".cheque").css("padding","0");
+	    $(".cod").css("border","none");
+            $(".cod").css("padding","0");
+	    
+	    
             
         }
     });
+    
+    $(".cod").click(function(){
+        var payment = $(this).attr("class");
+        
+        if(!!payment){
+            $("input[name='payment']").val("cod");
+            $(this).css("border","1px solid #337ab7");
+            $(this).css("padding","5px 10px 5px 10px");
+            $(this).css("width","170px");
+            $(".liqpay").css("border","none");
+            $(".liqpay").css("padding","0");
+	    $(".cheque").css("border","none");
+            $(".cheque").css("padding","0");
+            
+        }
+    });
+    
     
     //при каждом редактировании поля проверяем стоимость
     $("#form_taxiAPI input").change(function(){

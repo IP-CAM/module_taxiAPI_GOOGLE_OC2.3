@@ -78,6 +78,15 @@
                             
                             break;
 
+                             case "cod":
+                                echo "
+                                    <div class='col-lg-3 col-md-3 col-sm-3 col-xs-6 cod'>
+                                        <img src='/' alt='$checkque'>
+                                    </div>
+                                ";
+                            
+                            break;
+                            
                             case "liqpay":
                                 echo"
                                     <div class='col-lg-3 col-md-3 col-sm-3 col-xs-6 liqpay'>   
