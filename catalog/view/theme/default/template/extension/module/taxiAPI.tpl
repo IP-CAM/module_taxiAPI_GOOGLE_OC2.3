@@ -26,11 +26,11 @@
 
  </div>
          </section>
-        <p style="text-align: center;padding-bottom: 50px;color: #000;">*Минимальная стоимость проезда (подача машины + первых 2км)</p>
+        <p style="text-align: center;padding-bottom: 50px;color: #000;"><?=$minimum_fare;?></p>
        <form id="form_taxiAPI" action="" method="post"> 
         <section class="inputs">
          <div class="col-lg-12 col-md-12">
-           <h1 class="count">ПОДСЧЕТ СТОИМОСТИ <span style="color: #d1a36f;">ПРОЕЗДА</span></h1>
+           <h1 class="count"><?=$counting_cost;?> <span style="color: #d1a36f;"><?=$travel;?></span></h1>
            <p>Pellentesque congue volutpat enim in fringilla.</p>
            <h4 style="padding: 20px;"><?=$where_to_go_from?></h4>
            <div class="tarif">
@@ -48,6 +48,15 @@
              <input type="text" name="whereStreet" placeholder="<?=$street?>">
              <input type="text" name="whereHouse" placeholder="<?=$house?>">
              <input type="text" name="whereExtr" placeholder="<?=$extr?>">
+           </p>
+           <h4><?=$when;?><h4>
+           <p>
+           <label for="r1"><?=$now;?></label>
+           <input type="radio" name="radio" value="radio1"  style="width:20px; height:20px;" checked="checked" id="r1">
+            <label for="r2"><?=$choise_date;?></label>
+           <input type="radio" name="radio" value="radio2"  style="width:20px; height:20px;" id="r2">
+           <br>
+           <center><input type="text" style="display:none;" name="when" id="dateTaxi" ></center>
            </p>
            <h4><?=$to_whom?></h4>
            <p>

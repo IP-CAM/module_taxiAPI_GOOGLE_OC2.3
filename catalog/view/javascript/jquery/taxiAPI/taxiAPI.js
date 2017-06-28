@@ -11,92 +11,7 @@ $(document).ready(function(){
             $(".cheque").css("padding","0");
              
             
-	//отправляем на сервер для получения сумму
-    $("#form_taxiAPI").validate({
-        //если все гуд срабатывает по клику
-         submitHandler: function (){
-             
-              $.ajax({
-                    url : 'index.php?route=extension/module/taxiAPI/getDataPriceConfirm',
-                    type : 'POST',
-                    dataType:'text',
-                    data :{
-                        dataTaxiConfirm: $("#form_taxiAPI").serialize(),
-                    },
-                    success:function(data){
-                        
-                        //console.log(data);
-                        location.href = data;
-                        
-               
-                    },
-                    error:function (xhr, ajaxOptions, thrownError){
-                        console.log(thrownError); //выводим ошибку
-                    }
-                }); 
-              
-           
-        },
-    	rules:{
-
-            whenceCity:{
-                required: true,
-                minlength: 2,
-             },
-
-            whereCity:{
-                required: true,
-                minlength: 2,
-             },
-             tarif:{
-                required: true, 
-             },
- 
-             to_whomName:{
-                required: true,
-                minlength: 4,
-             },
-
-            to_whomPhone:{
-                required: true,
-                minlength: 10,
-                number: true,
-             },
-              
-       },
-
-       messages:{
-
-            whenceCity:{
-                required: "Это поле обязательно для заполнения",
-                minlength: "Город должен быть минимум 2 символа",
-             },
-
-            whereCity:{
-                required: "Это поле обязательно для заполнения",
-                minlength: "Город должен быть минимум 2 символа",
-             },
-             tarif:{
-                required: "Выберите тариф", 
-             },
-
-              
-             to_whomName:{
-                required: "Это поле обязательно для заполнения",
-                minlength: "Имя должно быть минимум 4 символа",
-             },
-
-            to_whomPhone:{
-                required: "Это поле обязательно для заполнения",
-                minlength: "Телефон должен быть минимум 10 символа",
-                number: "Только цифры",
-                
-             },
-            
-
-       }
-    });
- 
+	
     
     //вешаем  3 клика на 3 картинки по которой кликнули ту цену и приняли
     $(".StandartPrice").click(function(){
@@ -215,9 +130,32 @@ $(document).ready(function(){
       getUpdate();
     });
     
+    $("input[name='radio']" ).click(function() {
+      var select_date = $( "input[name='radio']:checked" ).val();
+      
+      if(select_date == "radio2"){
+	$("input[name='when']").css("display","block");
+      }else if(select_date == "radio1"){
+	$("input[name='when']").css("display","none");
+	$("input[name='when']").val(" ");
+      }
+      
+  
+ 
+    });
+    
+    //выбираем дату и время маршрута
+    $.datetimepicker.setLocale('ru');
+		$( "#dateTaxi" ).datetimepicker({
+ 			format:'H:i d-m-Y',
+			step:5,
+			minDate:'-1970/01/01', // yesterday is minimum date
+  		 });
+ 
+      
 
 });
-
+ 
 
 
 //автоматическое обновление данных

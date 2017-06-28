@@ -6,8 +6,7 @@ error_reporting(E_ALL ^E_NOTICE);
  <?php echo $column_left;?>
 <link href="view/stylesheet/taxiAPI.css" rel="stylesheet">
 
-<script type="text/javascript" src="view/javascript/jquery/tabs.js"></script>
-<div id="content" style="margin-left:50px;">
+ <div id="content" style="margin-left:50px;">
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
@@ -117,14 +116,15 @@ error_reporting(E_ALL ^E_NOTICE);
                     !-->
             </div>
         </form>
-
+	<center>
+	  <div class="author" style="margin-top: 20px; margin-bottom: 20px;">
+	      <a href="https://isyms.ru/">Created by Артур Легуша</a>
+	  </div>
+      </center>
       </div>
     </div>
   </div>
-      
-      <div class="author" style="float:right;">
-          <a href="https://isyms.ru/">Created by Артур Легуша</a>
-      </div>
+     
 </div>
 <?php echo $footer; ?>
 

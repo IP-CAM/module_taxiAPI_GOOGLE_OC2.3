@@ -5,8 +5,12 @@ error_reporting(E_ALL ^E_NOTICE);
 class ControllerExtensionModuleTaxiAPI extends Controller {
     public function index() {
         //добавляем свои скрипты
+        
+        $this->document->addStyle('catalog/view/css/taxiAPI/jquery.datetimepicker.css');
         $this->document->addStyle('catalog/view/css/taxiAPI/taxiAPI.css');
         $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/jquery.validate.min.js');
+        $this->document->addScript('https://code.jquery.com/ui/1.10.2/jquery-ui.js');
+        $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/jquery.datetimepicker.full.min.js');
         $this->document->addScript('catalog/view/javascript/jquery/taxiAPI/taxiAPI.js');
         
         $this->load->language('extension/module/taxiAPI');
@@ -36,6 +40,16 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 $data['confirm'] = $this->language->get('confirm');
                 $data['choise'] = $this->language->get('choise');
                 $data['tarif'] = $this->language->get('tarif');
+                $data['minimum_fare'] = $this->language->get('minimum_fare');
+                $data['counting_cost'] = $this->language->get('counting_cost');
+                $data['travel'] = $this->language->get('travel');
+                $data['when'] = $this->language->get('when');
+                $data['now'] = $this->language->get('now');
+                $data['choise_date'] = $this->language->get('choise_date');
+                
+                 
+                
+                 
                 
                 
                 
@@ -72,12 +86,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
         if(!empty((int)$km)){
             $this->load->model('checkout/order');
             $this->load->language('extension/payment/cheque');
-            $comment  = $this->language->get('text_payable') . "\n";
-            $comment .= $this->config->get('cheque_payable') . "\n\n";
-            $comment .= $this->language->get('text_address') . "\n";
-            $comment .= $this->config->get('config_address') . "\n\n";
-            $comment .= $this->language->get('text_payment') . "\n";
-          
+            
             $dataInfo = array(
                 'price'                 => (int)$km,
                 'to_whomName'           => $dataPriceConfirm["dataInfoOrder"]["to_whomName"],
@@ -89,6 +98,20 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                 
             
             );
+            
+            
+            $comment  = $this->language->get('text_payable') . "\n";
+            $comment .= $dataPriceConfirm["dataInfoOrder"]["to_whomName"] . "\n\n";
+             
+            $comment .= $this->config->get('config_address').":". "\n";
+            $comment .= $dataInfo['dataWhence']." - ".$dataInfo['dataWhere']. "\n\n";
+             
+            $comment .= $this->language->get('text_payment') . "\n\n";
+            $comment .= "Дата отправки:". "\n";
+            $comment .= $dataPriceConfirm["dataInfoOrder"]["when"]. "\n";
+            
+          
+            
             //оформляем заказ в соответствии со способом заказа
             
             switch($dataPriceConfirm['dataInfoOrder']['payment']){
@@ -191,7 +214,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
                     'version'        => '3',
                     'result_url'    => $_SERVER['SERVER_NAME']."/"."index.php?route=checkout/success",
                     'sender_first_name' => $dataInfo['to_whomName'],
-                   // 'sandbox'	=> 1,
+                    'sandbox'	=> 1,
                     
                     
                     );
@@ -270,6 +293,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $whenceExtr = " ";
         }
         
+         
         //создаем массив по даным откуда
         $arrayDataWhence = array(
             "whenceCity"    =>$whenceCity,
@@ -277,6 +301,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             "whenceHouse"   =>$whenceHouse,
             "whenceExtr"    =>$whenceExtr,
             "tarif"         =>$tarif,
+            		
             
         );
         
@@ -336,11 +361,21 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
             $payment = " ";
         }
         
+        //поле отвечает за дату отправки
+        if(!empty($dataTaxi['when'])){
+            $when = urldecode($dataTaxi['when']);
+        }else{
+            $when = date("H:i d-m-Y"); 
+        }
+        
+        
+        
         //формируем массив с данными о покупателе
         $dataInfoOrder = array(
             "to_whomName"    =>$to_whomName,
             "to_whomPhone"   =>$to_whomPhone,
-            "payment"        =>$payment
+            "payment"        =>$payment,
+            'when'	     =>$when,
         );
         
         
@@ -427,7 +462,7 @@ class ControllerExtensionModuleTaxiAPI extends Controller {
              $summa = $tarif*$km;
              $km = $summa." ".$this->session->data['currency'];
          }else{
-            $km = "Ошибка, возможно не выбран тариф!!!"; 
+            $km = $this->language->get('error_message_tarif'); 
          }
         
   
